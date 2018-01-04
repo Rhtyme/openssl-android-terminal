@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2012-2016 Arne Schwabe
+  ~ Distributed under the GNU GPL v2 with additional terms. For full terms see the file doc/LICENSE.txt
+  -->
+
+<resources>
+    <!-- Indigo -->
+    <!-- AlpVPN colours #203155, #C66D0D -->
+    <color name="primary">@color/vpn_banner_back</color>      <!--500-->
+    <color name="primary_dark">#1f6e63</color> <!--700-->
+    <color name="accent">#FFA726</color>       <!-- Orange 400 -->
+    <color name="gelb">#ffff00</color>
+    <color name="rot">#ff0000</color>
+
+    <color name="switchbar">@android:color/darker_gray</color>
+
+
+    <color name="background_tab_pressed">#1AFFFFFF</color>
+
+
+    <color name="dataIn">#ff0000</color>
+    <color name="dataOut">#0000ff</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#999999</color>
+    <color name="black">#000000</color>
+    <color name="red">#ff0000</color>
+    <color name="green">#06b314</color>
+
+    <color name="vpn_banner_back">#35B3A2</color>
+    <color name="tool_back">#6B809B</color>
+
+    <color name="tool_back_dark">#455264</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="vpn_status_tcolor">#4d4d4d</color>
+
+</resources>
