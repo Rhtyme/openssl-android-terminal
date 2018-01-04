@@ -15,15 +15,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
  * Created by root on 19/06/17.
  */
 
-public class VersionVPNThread implements Runnable {
+public class OpensslProcessThread implements Runnable {
 
     String[] argv;
 
@@ -33,7 +31,7 @@ public class VersionVPNThread implements Runnable {
 
     private String mCacheDir;
 
-    public VersionVPNThread(String[] argv, String mNativeDir, boolean useLbPath, String mCacheDir) {
+    public OpensslProcessThread(String[] argv, String mNativeDir, boolean useLbPath, String mCacheDir) {
         this.argv = argv;
         this.mNativeDir = mNativeDir;
         this.useLbPath = useLbPath;
@@ -84,57 +82,15 @@ public class VersionVPNThread implements Runnable {
                     EventBus.getDefault().post(new MessageEvent(null, TActivity.PROCESS_STOPPED));
                     return;
                 }
-                Log.d("OPENVPN", logline);
+                Log.d("OPENSSL", logline);
                 EventBus.getDefault().post(new MessageEvent(logline));
-
-/*
-                if (logline.startsWith(DUMP_PATH_STRING))
-                    mDumpPath = logline.substring(DUMP_PATH_STRING.length());
-
-                if (logline.startsWith(BROKEN_PIE_SUPPORT) || logline.contains(BROKEN_PIE_SUPPORT2))
-                    mBrokenPie = true;
-*/
-
-
-                // 1380308330.240114 18000002 Send to HTTP proxy: 'X-Online-Host: bla.blabla.com'
-
-                Pattern p = Pattern.compile("(\\d+).(\\d+) ([0-9a-f])+ (.*)");
-                Matcher m = p.matcher(logline);
-                if (m.matches()) {
-                    int flags = Integer.parseInt(m.group(3), 16);
-                    String msg = m.group(4);
-                    int logLevel = flags & 0x0F;
-
-                    VpnStatus.LogLevel logStatus = VpnStatus.LogLevel.INFO;
-
-/*
-                    if ((flags & M_FATAL) != 0)
-                        logStatus = VpnStatus.LogLevel.ERROR;
-                    else if ((flags & M_NONFATAL) != 0)
-                        logStatus = VpnStatus.LogLevel.WARNING;
-                    else if ((flags & M_WARN) != 0)
-                        logStatus = VpnStatus.LogLevel.WARNING;
-                    else if ((flags & M_DEBUG) != 0)
-                        logStatus = VpnStatus.LogLevel.VERBOSE;
-*/
-
-
-                    if (msg.startsWith("MANAGEMENT: CMD"))
-                        logLevel = Math.max(4, logLevel);
-
-
-                    VpnStatus.logMessageOpenVPN(logStatus, logLevel, msg);
-                } else {
-                    VpnStatus.logInfo("P:" + logline);
-                }
 
                 if (Thread.interrupted()) {
                     EventBus.getDefault().post(new MessageEvent(null, TActivity.PROCESS_STOPPED));
-                    throw new InterruptedException("OpenVpn process was killed form java code");
+                    throw new InterruptedException("Process was killed form java code");
                 }
             }
         } catch (InterruptedException | IOException e) {
-            VpnStatus.logException("Error reading from output of OpenVPN process", e);
             EventBus.getDefault().post(new MessageEvent(e.getMessage(), TActivity.PROCESS_STOPPED));
             if (mProcess != null) {
                 mProcess.destroy();

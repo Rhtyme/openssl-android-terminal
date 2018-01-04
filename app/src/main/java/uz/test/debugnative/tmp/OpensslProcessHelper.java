@@ -7,21 +7,21 @@ package uz.test.debugnative.tmp;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Vector;
 
+import uz.test.debugnative.OpensslTerminalApplication;
 import uz.test.debugnative.R;
 
-public class VPNLaunchHelper {
+public class OpensslProcessHelper {
 
-    private static final String OVPNCONFIGFILE = "android.conf";
     private static final String OPENSSL_GAPPS = "gapps_exec";
 
     public enum EXE_TYPE {
@@ -38,29 +38,33 @@ public class VPNLaunchHelper {
 
         String nativeAPI = NativeUtils.getNativeAPI();
         if (!nativeAPI.equals(abis[0])) {
-            VpnStatus.logWarning(R.string.abi_mismatch, Arrays.toString(abis), nativeAPI);
+            EventBus.getDefault().post(
+                    new MessageEvent(OpensslTerminalApplication
+                            .getContext().getString(R.string.abi_mismatch) + " "
+                            + Arrays.toString(abis) + nativeAPI));
             abis = new String[]{nativeAPI};
         }
 
         for (String abi : abis) {
-            File vpnExecutable = new File(context.getCacheDir(), getExecByType(exe_type) + "." + abi);
-            if ((vpnExecutable.exists() && vpnExecutable.canExecute())
-                    || writeSherBuvaHelloBinary(context, abi, vpnExecutable, exe_type)) {
-                return vpnExecutable.getPath();
+            File libExecutable = new File(context.getCacheDir(), getExecByType(exe_type) + "." + abi);
+            if ((libExecutable.exists() && libExecutable.canExecute())
+                    || writeLibsBinary(context, abi, libExecutable, exe_type)) {
+                return libExecutable.getPath();
             }
         }
         return null;
     }
 
-    private static boolean writeSherBuvaHelloBinary(Context context, String abi, File mvpnout,
-                                                    EXE_TYPE exe_type) {
+    private static boolean writeLibsBinary(Context context, String abi, File mvpnout,
+                                           EXE_TYPE exe_type) {
         try {
             InputStream mvpn;
 
             try {
                 mvpn = context.getAssets().open(getExecByType(exe_type) + "." + abi);
             } catch (IOException errabi) {
-                VpnStatus.logInfo("Failed getting assets for archicture " + abi);
+                EventBus.getDefault().post(
+                        new MessageEvent("Failed getting assets for archicture " + abi));
                 return false;
             }
 
@@ -77,14 +81,16 @@ public class VPNLaunchHelper {
             fout.close();
 
             if (!mvpnout.setExecutable(true)) {
-                VpnStatus.logError("Failed to make OpenVPN executable");
+                EventBus.getDefault().post(
+                        new MessageEvent("Failed to make Openssl executable"));
                 return false;
             }
 
 
             return true;
         } catch (IOException e) {
-            VpnStatus.logException(e);
+            EventBus.getDefault().post(
+                    new MessageEvent(e.toString()));
             return false;
         }
 
@@ -101,10 +107,6 @@ public class VPNLaunchHelper {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private static String[] getSupportedABIsLollipop() {
         return Build.SUPPORTED_ABIS;
-    }
-
-    public static String getConfigFilePath(Context context) {
-        return context.getCacheDir().getAbsolutePath() + "/" + OVPNCONFIGFILE;
     }
 
 }

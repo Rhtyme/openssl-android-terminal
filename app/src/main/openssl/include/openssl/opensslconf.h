@@ -108,7 +108,7 @@ extern "C" {
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
 #define ENGINESDIR "/usr/local/ssl/lib/engines"
 #define OPENSSLDIR ""
-//#define OPENSSLDIR "/data/user/0/uz.alpcrypto.alpvpn/cache"
+
 #endif
 #endif
 

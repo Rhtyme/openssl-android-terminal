@@ -5,13 +5,8 @@
 
 package uz.test.debugnative;
 
-import android.annotation.TargetApi;
 import android.app.Application;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -20,24 +15,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/*
-import org.acra.ACRA;
-import org.acra.ReportingInteractionMode;
-import org.acra.annotation.ReportsCrashes;
-*/
 
-public class ICSOpenVPNApplication extends Application {
+public class OpensslTerminalApplication extends Application {
 
+    private static Context context;
     @Override
     public void onCreate() {
         super.onCreate();
+        context = OpensslTerminalApplication.this;
+    }
+
+    public static Context getContext() {
+        return context;
     }
 
     public void setupConDirs() {
-        trimCache(ICSOpenVPNApplication.this);
+        trimCache(OpensslTerminalApplication.this);
 
-        Log.d("openvpn_ssl", "cache: " + getCacheDir().getPath());
-        Log.d("openvpn_ssl", "nativeDir: " + getApplicationInfo().nativeLibraryDir);
+        Log.d("openssl", "cache: " + getCacheDir().getPath());
+        Log.d("openssl", "nativeDir: " + getApplicationInfo().nativeLibraryDir);
 
         try {
             copyOCnf(getCacheDir().getPath() + "/", "openssl.cnf");
@@ -95,8 +91,8 @@ public class ICSOpenVPNApplication extends Application {
         while ((length = myInput.read(buffer)) > 0) {
             myOutput.write(buffer, 0, length);
         }
-        Log.d("openvpn_ssl", "crt file path: " + new File(path + fName).getPath());
-        Log.d("openvpn_ssl", "path: " + path + fName);
+        Log.d("openssl", "crt file path: " + new File(path + fName).getPath());
+        Log.d("openssl", "path: " + path + fName);
 
         myInput.close();
         myOutput.flush();

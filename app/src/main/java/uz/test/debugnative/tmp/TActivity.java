@@ -21,7 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import uz.test.debugnative.ICSOpenVPNApplication;
+import uz.test.debugnative.OpensslTerminalApplication;
 import uz.test.debugnative.R;
 
 /**
@@ -80,7 +80,7 @@ public class TActivity extends Activity {
                     },
                     PERMISSION_REQUEST);
         } else {
-            ((ICSOpenVPNApplication) getApplication()).setupConDirs();
+            ((OpensslTerminalApplication) getApplication()).setupConDirs();
         }
     }
 
@@ -124,8 +124,8 @@ public class TActivity extends Activity {
     private void sendOpenSSLCommand(String[] opvArgs) {
         String nativeLibraryDirectory = getApplicationInfo().nativeLibraryDir;
 
-        String binaryName = VPNLaunchHelper.writeBinaryByType(getBaseContext(),
-                VPNLaunchHelper.EXE_TYPE.OPENSSL);
+        String binaryName = OpensslProcessHelper.writeBinaryByType(getBaseContext(),
+                OpensslProcessHelper.EXE_TYPE.OPENSSL);
 
 
         if (binaryName == null) {
@@ -135,7 +135,7 @@ public class TActivity extends Activity {
         addTextToConsole("nativeLibDir: " + nativeLibraryDirectory);
         addTextToConsole("binaryName: " + binaryName);
         opvArgs[0] = binaryName;
-        new Thread(new VersionVPNThread(opvArgs, nativeLibraryDirectory, true,
+        new Thread(new OpensslProcessThread(opvArgs, nativeLibraryDirectory, true,
                 getCacheDir().getPath())).start();
     }
 
