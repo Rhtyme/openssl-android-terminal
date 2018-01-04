@@ -53,8 +53,7 @@ public class TActivity extends Activity {
         btnEnter = (Button) findViewById(R.id.btn_enter);
         scrollView = (ScrollView) findViewById(R.id.sc_main);
         PROCESS_STATE = PROCESS_STOPPED;
-        addTextToConsole("Console version 1.0 beta.\nAll Rights copyright.\n" +
-                "(Sirojiddin Komolov. @alpteam!!!)");
+        addTextToConsole("Console version 1.0 beta");
 
         btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
